@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-# @Time : 2019-09-30 11:58
-# @Author : Mucheng Ren, Ran Wei
-# @Email : rdoctmc@gmail.com, weiranbit@163.com 
-# @File : utils_duqa.py
 """ Load Duqa dataset. """
 
 from __future__ import absolute_import, division, print_function
@@ -121,6 +117,50 @@ def read_baidu_examples(input_file, is_training):
                 end_position=end_position,
                 )
             examples.append(per_example)
+    return examples
+
+
+def read_baidu_examples_pred(raw_data, is_training):
+    """直接从[dir, dir...]读取数据"""
+
+    def is_whitespace(c):
+        if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
+            return True
+        return False
+
+    examples = []
+    for example in raw_data:
+        # seg para就是 分词后的文本
+        qas_id = example['question_id']
+        question_text = example['question']
+        context_tokens = example['doc_tokens']
+        start_position = None
+        end_position = None
+        orig_answer_text = None
+        # 若不是训练，那么数据应该只包含问题，文本，以上三个信息都为None
+        # 若是训练的话，
+        if is_training:
+            orig_answer_text = example['fake_answer'][0]
+            start_position = int(example['answer_span'][0])
+            end_position = int(example['answer_span'][1])
+
+            # 检测一下给出的fake answer 能否在文中找出来。 找不出来就跳过。
+            actual_text = "".join(
+                context_tokens[start_position:(end_position + 1)])
+            cleaned_answer_text = orig_answer_text
+            if actual_text.find(cleaned_answer_text) == -1:
+                logger.warning("Could not find answer: '%s' vs. '%s'",
+                               actual_text, cleaned_answer_text)
+                continue
+        per_example = BaiduExample(
+            qas_id=qas_id,
+            question_text=question_text,
+            doc_tokens=context_tokens,
+            orig_answer_text=orig_answer_text,
+            start_position=start_position,
+            end_position=end_position,
+        )
+        examples.append(per_example)
     return examples
 
 

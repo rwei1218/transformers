@@ -156,6 +156,7 @@ class RaceProcessor(DataProcessor):
                         label=truth))
         return examples
 
+
 class SwagProcessor(DataProcessor):
     """Processor for the SWAG data set."""
 

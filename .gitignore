@@ -132,3 +132,14 @@ examples/runs
 # data
 /data
 serialization_dir
+
+# Demo
+/BIT_OpenDomain_QA/data
+/BIT_OpenDomain_QA/checkpoints
+/BIT_OpenDomain_QA/runs
+/BIT_OpenDomain_QA/creeper/__pycache__
+/BIT_OpenDomain_QA/mrc/__pycache__
+/BIT_OpenDomain_QA/rerank/__pycache__
+/BIT_OpenDomain_QA/test
+/BIT_OpenDomain_QA/spider_example.json
+/BIT_OpenDomain_QA/url2io_example.json
